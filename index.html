@@ -1,0 +1,391 @@
+<html>
+<head>
+<script>
+
+
+				function rand (min, max) {
+				    return Math.floor(Math.random() * (max - min + 1)) + min;
+				}
+
+
+
+	var results = {};
+	function permutations1(str, j) {
+		if (j == str.length-1) {
+				results[str]=str;
+				console.log(str);
+		}
+		else {
+			for (var i=0; i<str.length; i++) {
+				str = swap(str, i, j);
+				permutations1(str, j+1);
+				str = swap(str, j, i);
+			}
+		}
+	}
+	function swap(str, i, j) {
+		var arr = str.split('');
+		var tmp = arr[j];
+		arr[j]=arr[i];
+		arr[i]=tmp;
+		return arr.join('');
+	}
+	permutations1('abc', 0);
+	print(results);
+
+	function print(json) {
+		var res = '';
+		var count = 0;
+		for (var i in json) {
+			res+=json[i]+', ';
+			count++;
+		}
+		console.info(res + ' - ' + count);
+	}
+
+
+
+
+
+
+
+
+
+
+	function LinkedList() {
+
+		this.head = null;
+		this.tail = null;
+		this.size = 0;
+
+		this.isEmpty = function() {
+			return this.size == 0;
+		}
+
+		this.add = function(data) {
+			var node = new Node(data);
+			if (this.isEmpty()) {
+				this.head = node;
+			}
+			else {
+				if (!this.tail) {
+					this.tail = node;
+					this.head.next = node
+				}
+				else {
+					this.tail.next = node;
+					this.tail = node;
+				}
+			}
+			this.size++;
+		}
+
+		this.remove = function(n) {
+			var node = this.head;
+			for (var i=1; i<n; i++) {
+				node = node.next; 
+			}
+			node.next = node.next.next;
+		}
+
+		this.removeRecursive = function(n) {
+			function remove( ) {
+
+			}
+			remove();
+		}
+
+		function Node(data) {
+			this.next = null;
+			this.data = data;
+		}
+
+	}
+
+	function printLinkedList(list) {
+		var out = "";
+		var node = list.head;
+		while(node) {
+			out+= node.data + ' -> ';
+			node = node.next;
+		}
+		console.log(out)
+	}
+
+	function testLinkedList() {
+		var list = new LinkedList();
+		for (var i=0; i<10; i++) {
+			list.add(i);
+		}
+		list.remove(3);
+		printLinkedList(list);
+	}
+	testLinkedList();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	function Tree() {
+		this.root;
+
+		function Node(key, left, right) {
+			this.left = left;
+			this.right = right;
+			this.key = key;
+		};
+		
+		this.get = function(key) {
+			return get(key, root)
+		}
+		function get(key, node) {
+			if (!node) return null;
+			//if (node)
+		}
+
+		this.put = function(key) {
+			if (!this.root) this.root = new Node(key);
+			else put(this.root, key);
+		}
+		function put(node, key) {
+			
+			if (!node) return;
+			if (key > node.key) {
+				(!node.right) ?
+					node.right = new Node(key):
+					put(node.right, key);
+			}
+			else if (key < node.key) {
+				(!node.left) ?
+					node.left = new Node(key):
+					put(node.left, key)
+			}
+		}
+	}
+	function testTree() {
+		var tree = new Tree();
+		var vals = ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H'];
+		for (var i=0; i<vals.length; i++) {
+			tree.put(vals[i]);
+		}
+		inorder(tree);
+		preorder(tree);
+		postorder(tree);
+		depth(tree);
+		depth2(tree);
+		treeBFS(tree);
+		printTreeLineByLine(tree);
+		printTreeLineByLine2(tree);
+		lowestCommonAncestorBST(tree, 'A', 'E');
+		lowestCommonAncestorBST(tree, 'A', 'H');
+		lowestCommonAncestorBST2(tree, 'A', 'E');
+		lowestCommonAncestorBST2(tree, 'A', 'H');
+		//console.info(tree);
+	}
+	function preorder(tree) {
+		var out = '';
+		function _preorder(node) {
+			if (!node) return;
+			out+=node.key + ' ';
+			_preorder(node.left);
+			_preorder(node.right);
+		}
+		_preorder(tree.root);
+		console.info(out);
+	}
+	function inorder(tree) {
+		var out = '';
+		function inorder(node) {
+			if (!node) return;
+			inorder(node.left);
+			out+=node.key + ' ';
+			inorder(node.right);
+		}
+		inorder(tree.root);
+		console.info(out);
+	}
+	function postorder(tree) {
+		var out = '';
+		function postorder(node) {
+			if (!node) return;
+			postorder(node.left);
+			postorder(node.right);
+			out+=node.key + ' ';
+		}
+		postorder(tree.root);
+		console.info(out);
+	}
+	function depth(tree) {
+		function _depth(node, depth) {
+			if (!node) return depth;
+			depth++;
+			var l = _depth(node.left, depth);
+			var r = _depth(node.right, depth);
+			return Math.max(l,r);
+		}
+		console.log(_depth(tree.root, 0));
+	}
+	function depth2(tree) {
+		function _depth(node) {
+			if (!node) return 0;
+			var l = _depth(node.left);
+			var r = _depth(node.right);
+			return Math.max(l,r) +1;
+		}
+		console.log(_depth(tree.root, 0));
+	}
+	function treeBFS(tree) {
+		var queue = [];
+		queue.push(tree.root);
+		var out ='';
+		while (queue.length > 0) {
+			var node = queue.shift();
+			if (node) {
+				queue.push(node.left);
+				queue.push(node.right);
+				out+=node.key + ' ';
+				
+			}
+		}
+		console.log(out);
+	}
+
+	function printTreeLineByLine(tree) {
+		var currLevel = [], nextLevel = [];
+		currLevel.push(tree.root);
+		var out ='';
+
+		while (currLevel.length > 0) {
+			var node = currLevel.shift();
+			if (node) {
+				nextLevel.push(node.left);
+				nextLevel.push(node.right);
+				out+=node.key + ' ';
+			}
+			if(currLevel.length == 0) {
+				currLevel = nextLevel;
+				nextLevel = [];
+				out+='\n';
+			}
+		}
+		console.log(out);
+	}
+	function printTreeLineByLine2(tree) {
+		var queue = [];
+		queue.push(tree.root);
+		var currLevelCounter = 1, nextLevelCounter = 0;
+		var out ='';
+
+		while (queue.length > 0) {
+			var node = queue.shift();
+			currLevelCounter--;
+			if (node) {
+				queue.push(node.left);
+				queue.push(node.right);
+				nextLevelCounter+=2;
+				out+=node.key + ' ';
+			}
+			if(currLevelCounter == 0) {
+				currLevelCounter = nextLevelCounter;
+				nextLevelCounter = 0;
+				out+='\n';
+			}
+		}
+		console.log(out);
+	}
+	function lowestCommonAncestorBST(tree, node1, node2) {
+		function _lowestCommonAncestorBST(lca) {
+			if(node1 > lca.key && node2 > lca.key) {
+				return _lowestCommonAncestorBST(lca.right);
+			}
+			else if(node1 < lca.key && node2 < lca.key) {
+				return _lowestCommonAncestorBST(lca.left);
+			}
+			else {
+				return lca;
+			}
+		}
+		console.log(_lowestCommonAncestorBST(tree.root).key);
+	}
+	function lowestCommonAncestorBST2(tree, node1, node2) {
+		var lca = tree.root;
+		while (lca) {
+			if(node1 > lca.key && node2 > lca.key) {
+				lca = lca.right;
+			}
+			else if(node1 < lca.key && node2 < lca.key) {
+				lca = lca.left;
+			}
+			else {
+				console.log(lca.key);
+				return lca;
+			}
+		}
+		console.log(lca.key);
+	}
+	testTree();
+
+
+
+
+
+	function flatten(tree) {
+		var out = '';
+		function inorder(node) {
+			if (!node) return;
+			inorder(node.left);
+			out+=node.key + ' ';
+			inorder(node.right);
+		}
+		inorder(tree.root);
+		console.info(out);
+	}
+
+
+
+
+
+
+
+
+	//flatten
+
+
+</script>
+</head>
+<body>
+	<style type="text/css">
+		.A {
+			width:100px;
+			height:100px;
+			background-color: red;
+			float: left;
+		}
+		.B {
+			background-color: blue;
+			float: left;
+			width:100px;
+			height:100px;
+		}
+		.W {
+			width:120px;
+		}
+	</style>
+	<div class="W">
+	<div class="A">A</div>
+	<div class="B">B</div>
+	</div>
+</body>
+</html>
