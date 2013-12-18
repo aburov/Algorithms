@@ -175,17 +175,125 @@ function cycle(node) {
 		slow = slow.next,
 		fast = fast.next.next;
 		if (fast == slow) {
-			return true;
+			return fast;
 		}
 	}
-	return false;
+	return null;
 }
 (function () {
 	var list = createLinkedList();
 	console.log('CYCLE: ' + cycle(list.head));
 	var list = createLinkedList(true);
-	console.log('CYCLE: ' + cycle(list.head));
+	console.log('CYCLE: ' + cycle(list.head).data);
 	//printLinkedList(list.head, 'CYCLE');
+})();
+
+
+
+/*
+ * ========================= REMOVE CYCLE (Floyd's Cycle-Finding Algorithm) =========================
+ */
+function cycleNode(node) {
+	//find node on cycle
+	var nodeOnCycle = cycle(node);
+	if (!nodeOnCycle) {
+		return null;
+	}
+
+	//get cycle length
+	var cycleIteratorNode = nodeOnCycle.next,
+		cycleLength = 1;
+	while (nodeOnCycle != cycleIteratorNode) {
+		cycleIteratorNode = cycleIteratorNode.next;
+		cycleLength++;
+	}
+
+	//launch 2 list pointers with leading at cycle length
+	var leadingNode = node, trailingNode = node;
+	for (var i=0; i<cycleLength; i++) {
+		leadingNode = leadingNode.next;
+	}
+
+	//once leading and trailing match, return
+	while (leadingNode != trailingNode) {
+		leadingNode = leadingNode.next;
+		trailingNode = trailingNode.next;
+	}
+	return leadingNode.data;
+}
+(function () {
+	// var list = createLinkedList();
+	// console.log('CYCLE: ' + cycle(list.head));
+	var list = createLinkedList(true);
+	console.log('CYCLE NODE: ' + cycleNode(list.head));
+	//printLinkedList(list.head, 'CYCLE');
+})();
+
+
+
+/*
+ * ========================= SPLIT =========================
+ */
+function split(node, n) {
+	var head1 = node,
+		head2 = node;
+	for (var i=0; i<n-1; i++) {
+		head2 = head2.next;
+	}
+	var tmp = head2.next;
+	head2.next = null;
+	head2 = tmp;
+	return [head1, head2];
+
+}
+(function () {
+	var list = createLinkedList();
+	var a = split(list.head, 3);
+	printLinkedList(a[0], 'SPLIT 1');
+	printLinkedList(a[1], 'SPLIT 2');
+
+})();
+
+
+
+/*
+ * ========================= MERGE SORTED LISTS =========================
+ */
+function merge(node1, node2) {
+	var head;
+	var startNode;
+	while (node1 || node2) {
+		if(!node2 || (node1 && node1.data < node2.data)) {
+			if(!head) {
+				head = node1;
+				startNode = head;
+			}
+			else {
+				head.next = node1;
+				head = node1;
+			}
+			node1 = node1.next;
+		}
+		else if(!node1 || (node2 && node1.data > node2.data)) {
+			if(!head) {
+				head = node2;
+				startNode = head;
+			}
+			else {
+				head.next = node2;
+				head = node2;
+			}
+			node2 = node2.next;
+		}
+	}
+	return startNode;
+}
+(function () {
+	var list1 = new LinkedList(),
+		list2 = new LinkedList();
+	for (var i=0; i<10; i+=2) {list1.add(i);}
+	for (var i=1; i<10; i+=2) {list2.add(i);}
+	printLinkedList(merge(list1.head, list2.head), 'MERGE');
 })();
 
 
@@ -260,7 +368,7 @@ function createLinkedList(cycle) {
 	var node1, node2;
 	for (var i=0; i<10; i++) {
 		var node2 = list.add(i);
-		if (i==5)
+		if (i==2)
 			node1 = node2;
 	}
 	if (cycle) {
