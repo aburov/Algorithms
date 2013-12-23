@@ -143,7 +143,7 @@ function validateBST(node) {
 }
 (function() {
 	var tree = getTree();
-	tree.root.left.left.key = 'Z';
+	tree.root.left.left.right= {key: 'Z'};
 	console.log(validateBST(getTree().root));
 	console.log(validateBST(tree.root));
 	printTreeLineByLine2(tree);
