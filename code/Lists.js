@@ -298,6 +298,40 @@ function merge(node1, node2) {
 
 
 
+/*
+ * ========================= ADD LISTS =========================
+ */
+function addLists(node1, node2) {
+	var carryOver = 0;
+	while (node1 || node2) {
+		if (!node1)
+			node1 = 0;
+		if (!node2)
+			node2 = 0;
+		var sum = node1.data + node2.data + carryOver;
+		if (sum >= 10) {
+			carryOver = 1;
+			sum = sum-10;
+		}
+		else
+			carryOver = 0;
+		node1 = node1.next;
+		node2 = node2.next;
+		out += sum;
+	}
+}
+(function () {
+	out = 'ADD LISTS: ';
+	var list1 = new LinkedList(),
+		list2 = new LinkedList();
+	for (var i=1; i<5; i++) {list1.add(i);}
+	for (var i=1; i<4; i++) {list2.add(i);}
+	addLists(list1.head, list2.head);
+console.log(out);
+})();
+
+
+
 
 
 

@@ -85,3 +85,57 @@ function printMatrix(matrix){
 } 
 
 
+
+/*
+ * ========================= BINARY SEARCH RECURSIVE =========================
+ */
+function binarySearch(A, value, min, max) {
+	if (min > max)
+		return null;
+	var lookupindex = Math.floor(min + (max-min)/2);
+	if (value == A[lookupindex])
+		return lookupindex;
+	//look right
+	if (value > A[lookupindex])
+		min = lookupindex + 1;
+	//look left
+	if (value < A[lookupindex])
+		max = lookupindex - 1;
+	
+	return binarySearch(A, value, min, max);
+}
+(function() {
+	var A = [];
+	for (var i=0; i<20; i++)
+		A.push(i);
+	console.log("BINARY SEARCH: " + binarySearch(A, 12, 0, A.length-1));
+	console.log("BINARY SEARCH: " + binarySearch(A, 22, 0, A.length-1));
+})();
+
+
+
+/*
+ * ========================= TRAVERSE SORTED ARRAY =========================
+ */
+function sortedArrayToBST(A, min, max) {
+	if( min == max){
+        out += max + ' ,'; //insert A[max]
+        return;
+    }
+    else if(min > max) {
+        return;
+    }
+    var middle = Math.floor(min + (max-min)/2);
+    out += middle + ' ,'; //insert A[middle]
+    sortedArrayToBST(A, min, middle - 1);
+    sortedArrayToBST(A, middle+1, max);
+}
+(function() {
+	out='';
+	var A = [];
+	for (var i=1; i<=10; i++)
+		A.push(i);
+	 sortedArrayToBST(A, 1, A.length-1);
+	console.log("TRAVERSE SORTED ARRAY: " + out);
+})();
+

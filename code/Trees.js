@@ -88,14 +88,22 @@ function postorder(node) {
 }
 function postorderI(node) {
 	var stack = [];
+	var lastVisited;
 	while(node || !stack.isEmpty()) {
 		if (node) {
 			stack.push(node);
 			node = node.left;
 		}
 		else {
-			node = stack.pop();
-
+			var peekNode = stack[stack.length-1];
+			if (peekNode.right && lastVisited != peekNode.right)
+				//if traversing node from left child AND right child exists, move right
+				node = peekNode.right;
+			else {
+				stack.pop();
+				out+=peekNode.key + ' ';
+				lastVisited = peekNode;
+			}
 		}
 	}
 }
@@ -105,7 +113,7 @@ function postorderI(node) {
 	postorder(getTree().root);
 	console.log(out);
 	out = "POSTORDER: ";
-	//postorderI(getTree().root);
+	postorderI(getTree().root);
 	console.log(out);
 })();
 
@@ -138,7 +146,7 @@ function treeBFS(node) {
 
 
 /*
- * ========================= DEPTH =========================
+ * ========================= MAX DEPTH =========================
  */
 function depth(node, d) {
 	if (!node) 
@@ -408,24 +416,161 @@ function validateBST2(node, min, max) {
 
 
 
+/*
+ * ========================= PERIMETER \ CURCUMFERENCE =========================
+ */
+ function printPerimeter(node, left, right) {
+ 	function processLeft(node, leftEdge) {
+	 	if (!node)
+	 		return;
+	 	//leaf
+	 	if (!node.left && !node.right && !leftEdge)
+	 		out += node.key + ' ';
+	 	//edge
+	 	if (leftEdge) {
+	 		out += node.key + ' ';
+	 		if (!node.left)
+	 			leftEdge = false;
+	 	}
+	 	
+	 	processLeft(node.left, leftEdge);
+	 	processLeft(node.right, false);
+	 }
+	 function processRight(node, rightEdge) {
+	 	if (!node) {
+	 		return;
+	 	}
+	 	//edge
+	 	var last;
+	 	if (rightEdge) {
+	 		if (!node.right) {
+	 			rightEdge = false;
+	 			last = true;
+	 		}
+	 	}
+	 	processRight(node.left, false);
+	 	processRight(node.right, rightEdge);
+	 	//leaf
+	 	if (!node.left && !node.right && !rightEdge && !last)
+	 		out += node.key + ' ';
+	 	//edge
+	 	if (rightEdge || last) {
+	 		out += node.key + ' ';
+	 	}
+	 }
+	 processLeft(node.left, true);
+	 processRight(node.right, true);
+}
+/////// TEST /////
+(function() {
+	out = 'PERIMETER \ CURCUMFERENCE: ';
+	printPerimeter(getTree().root, true, true);
+	console.log(out);
+	out = 'PERIMETER \ CURCUMFERENCE: ';
+	var t1 = getTree();
+	t1.root = {key:1};
+	t1.root.left = {key:2};
+	t1.root.right = {key:3};
+	t1.root.left.left = {key:4};
+	t1.root.left.right = {key:5};
+	t1.root.right.left = {key:6};
+	t1.root.right.right = {key:7};
+	printPerimeter(t1.root, true, true);
+	console.log(out);
+})();
 
 
 
+/*
+ * ========================= FLATTEN PREORDER =========================
+ */
+ function flattenPreorder(node) {
+ 	if (!node) return;
+ 	if (node.left) {
+ 		getRightmostNode(node.left).right = node.right;
+ 		node.right = node.left;
+ 		node.left = null;
+ 	}
+
+ 	flattenPreorder(node.left);
+ 	flattenPreorder(node.right);
+}
+/////// TEST ////////
+(function() {
+	var t = getTree();
+	console.log('FLATTEN PREORDER: ');
+	flattenPreorder(t.root);
+	printTreeLineByLine2(t);
+})();
 
 
 
+/*
+ * ========================= FLATTEN INORDER =========================
+ */
+ function flattenInorder(node, parent, direction) {
+ 	if (!node) return;
+
+ 	flattenInorder(node.left, node, 'left');
+
+ 	if (node.left) {
+ 		getRightmostNode(node.left).right = node;
+ 		if (parent)
+ 			parent[direction] = node.left;
+ 		node.left = null;
+ 	}
+
+ 	flattenInorder(node.right, node, 'right');
+}
+/////// TEST ////////
+(function() {
+	var t = getTree();
+	var root = t.root;
+	t.root = getLeftmostNode(root);
+	console.log('FLATTEN INORDER: ');
+	flattenInorder(root);
+	printTreeLineByLine2(t);
+})();
 
 
 
+/*
+ * ========================= FLATTEN POSTORDER =========================
+ */
+ var lastNode = null;
+ function flattenPostorder(node, parent, direction) {
+ 	if (!node) return;
+ 	
+ 	flattenPostorder(node.left, node, 'left');
+ 	flattenPostorder(node.right, node, 'right');
+
+ 	if (!lastNode)
+ 		lastNode = node;
+ 	else {
+ 		lastNode.right = node;
+ 		lastNode = node;	
+ 	}
+ 	if (parent)
+ 		parent[direction] = null;
+}
+/////// TEST ////////
+(function() {
+	var t = getTree();
+	var root = t.root;
+	t.root = getLeftmostNode(root);
+	console.log('FLATTEN POSTORDER: ');
+	flattenPostorder(root);
+	printTreeLineByLine2(t);
+})();
 
 
 
-
-
-
-
+/*
+ * ========================= PRINT BY LINE (2 queues) =========================
+ */
 function printTreeLineByLine(tree) {
-	var currLevel = [], nextLevel = [];
+	var currLevel = [], 
+		nextLevel = [];
 	currLevel.push(tree.root);
 	var out ='';
 
@@ -436,7 +581,7 @@ function printTreeLineByLine(tree) {
 			nextLevel.push(node.right);
 			out+=node.key + ' ';
 		}
-		if(!currLevel.isEmpty()) {
+		if(currLevel.isEmpty()) {
 			currLevel = nextLevel;
 			nextLevel = [];
 			out+='\n';
@@ -444,6 +589,17 @@ function printTreeLineByLine(tree) {
 	}
 	console.log(out);
 }
+/////// TEST ////////
+(function() {
+	console.log("PRINT BY LINE (2 queues): \n");
+	printTreeLineByLine(getTree());
+})();
+
+
+
+/*
+ * ========================= PRINT BY LINE (1 queue) =========================
+ */
 function printTreeLineByLine2(tree) {
 	var queue = [];
 	queue.push(tree.root);
@@ -467,6 +623,15 @@ function printTreeLineByLine2(tree) {
 	}
 	console.log(out);
 }
+/////// TEST ////////
+(function() {
+	console.log("PRINT BY LINE (no queues): \n");
+	printTreeLineByLine2(getTree());
+})();
+
+
+
+
 function lowestCommonAncestorBST(tree, node1, node2) {
 	function _lowestCommonAncestorBST(lca) {
 		if(node1 > lca.key && node2 > lca.key) {
@@ -503,17 +668,25 @@ testTree();
 
 
 
-function flatten(tree) {
-	var out = '';
-	function inorder(node) {
-		if (!node) return;
-		inorder(node.left);
-		out+=node.key + ' ';
-		inorder(node.right);
-	}
-	inorder(tree.root);
-	console.info(out);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function getTree() {
@@ -549,6 +722,14 @@ function getIntTree() {
 
 
 
+
+
+
+
+
+
+
+
 function Tree() {
 	this.root;
 
@@ -574,16 +755,30 @@ function Tree() {
 		
 		if (!node) return;
 		if (key > node.key) {
-			(!node.right) ?
-				node.right = new Node(key):
+			if (!node.right)
+				node.right = new Node(key);
+			else
 				put(node.right, key);
 		}
 		else if (key < node.key) {
-			(!node.left) ?
-				node.left = new Node(key):
+			if (!node.left)
+				node.left = new Node(key);
+			else
 				put(node.left, key)
 		}
 	}
+}
+function getRightmostNode(node) {
+	while (node.right) {
+		node = node.right;
+	}
+	return node;
+}
+function getLeftmostNode(node) {
+	while (node.left) {
+		node = node.left;
+	}
+	return node;
 }
 function testTree() {
 	return;
