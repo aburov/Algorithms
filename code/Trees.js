@@ -2,6 +2,11 @@
 Array.prototype.isEmpty = function() {
 	return this.length == 0;
 };
+ Array.prototype.last = function(){
+    return this[this.length - 1];
+};
+
+
 
 
 /*
@@ -40,6 +45,7 @@ function preorderI(node) {
 
 
 
+
 /*
  * ========================= INORDER =========================
  */
@@ -73,6 +79,7 @@ function inorderI(node) {
 	inorderI(getTree().root);
 	console.log(out);
 })();
+
 
 
 
@@ -119,6 +126,7 @@ function postorderI(node) {
 
 
 
+
 /*
  * ========================= BFS (LINE ORDER) =========================
  */
@@ -143,6 +151,8 @@ function treeBFS(node) {
 	//postorderI(getTree().root);
 	//console.log(out);
 })();
+
+
 
 
 /*
@@ -171,6 +181,7 @@ function depth2(node) {
 
 
 
+
 /*
  * ========================= DEPTH OF NODE =========================
  */
@@ -189,6 +200,7 @@ function nodeDepth(node, key, d) {
 	console.log('NODE DEPTH E: ' + nodeDepth(getTree().root, 'E', 1));
 	console.log('NODE DEPTH E: ' + nodeDepth(getTree().root, 'z', 1));
 })();
+
 
 
 
@@ -230,6 +242,7 @@ function validateBST2(node, min, max) {
 
 
 
+
 /*
  * ========================= EQUAL TREES =========================
  */
@@ -260,6 +273,7 @@ function validateBST2(node, min, max) {
 	var t2 = getTree();
 	console.log('EQUAL TREES: ' + equalTrees(t1.root, t2.root));
 })();
+
 
 
 
@@ -302,6 +316,7 @@ function validateBST2(node, min, max) {
 
 
 
+
 /*
  * ========================= SUM ALL NODES IN TREE =========================
  */
@@ -314,6 +329,7 @@ function validateBST2(node, min, max) {
 (function() {
 	console.log('SUM ALL NODES: ' + sumAllNodes(getIntTree().root));
 })();
+
 
 
 
@@ -333,6 +349,7 @@ function validateBST2(node, min, max) {
 	console.log('SUM ALL NODES AT DEPTH 4: ' + sumAllNodesAtDepth(getIntTree().root, 1, 4));
 	console.log('SUM ALL NODES AT DEPTH 1: ' + sumAllNodesAtDepth(getIntTree().root, 1, 1));
 })();
+
 
 
 
@@ -363,6 +380,7 @@ function validateBST2(node, min, max) {
 
 
 
+
 /*
  * ========================= REMOVE DUPLICATES IN BST =========================
  */
@@ -386,6 +404,7 @@ function validateBST2(node, min, max) {
 	t1.root.left.left.key = 2;
 	//printTreeLineByLine2(t1);
 })();
+
 
 
 
@@ -413,6 +432,7 @@ function validateBST2(node, min, max) {
 	t1.root.left.left.key = 2;
 	//printTreeLineByLine2(t1);
 })();
+
 
 
 
@@ -481,6 +501,7 @@ function validateBST2(node, min, max) {
 
 
 
+
 /*
  * ========================= FLATTEN PREORDER =========================
  */
@@ -502,6 +523,7 @@ function validateBST2(node, min, max) {
 	flattenPreorder(t.root);
 	printTreeLineByLine2(t);
 })();
+
 
 
 
@@ -531,6 +553,7 @@ function validateBST2(node, min, max) {
 	flattenInorder(root);
 	printTreeLineByLine2(t);
 })();
+
 
 
 
@@ -565,6 +588,7 @@ function validateBST2(node, min, max) {
 
 
 
+
 /*
  * ========================= PRINT BY LINE (2 queues) =========================
  */
@@ -594,6 +618,7 @@ function printTreeLineByLine(tree) {
 	console.log("PRINT BY LINE (2 queues): \n");
 	printTreeLineByLine(getTree());
 })();
+
 
 
 
@@ -697,8 +722,9 @@ function deserializeBST1(flatPreorderTree, min, max, node, direction) {
 
 
 
+
 /*
- * ========================= SERIALIZE / DESERIALIZE BST (PREORDER ONLY!) =========================
+ * ========================= SERIALIZE / DESERIALIZE BT (PREORDER ONLY! with hashes #) =========================
  */
 function serializeBT(node) {
 	if (!node) {
@@ -760,10 +786,11 @@ function deserializeBT1(flatPreorderTree, node, direction) {
 
 
 
+
 /*
  * ========================= DESERIALIZE BT from INORDER, PREORDER =========================
  */
-function deserializeBTfromInorderPostorder(inorder, preorder) {
+function deserializeBTfromInorderPreorder(inorder, preorder) {
 	//base
 	if (preorder.isEmpty())
 		return;
@@ -775,32 +802,69 @@ function deserializeBTfromInorderPostorder(inorder, preorder) {
 
 	//find root in the inorder sequence and slice it
 	//all nodes to the left will be in the left subtree, while all right nodes are in the right subtree
-	var leftTree = inorder.slice(0, lookupInorderIndex(root.key, inorder));
-	var rightTree = inorder.slice(lookupInorderIndex(root.key, inorder) + 1);
+	var leftTree = inorder.slice(0, lookupArrayIndex(root.key, inorder));
+	var rightTree = inorder.slice(lookupArrayIndex(root.key, inorder) + 1);
+
+	//tree root
+	if (!deserializeBTfromInorderPreorder.root)
+		deserializeBTfromInorderPreorder.root = root;
+
+	//preorder recursion that simulates traversal to insert node at every step
+	if (leftTree.length > 0) 
+		root.left = deserializeBTfromInorderPreorder(leftTree, preorder);
+	if (rightTree.length > 0)
+		root.right = deserializeBTfromInorderPreorder(rightTree, preorder);
+
+	return root;
+
+
+}
+/////// TEST ////////
+(function() {
+	console.log("DESERIALIZE BT from INORDER PREORDER: ");
+	deserializeBTfromInorderPreorder(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], ['F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H']);
+	//deserializeBTfromInorderPreorder(['A', 'B', 'C'], ['B', 'A', 'C']);
+	printTreeLineByLine(deserializeBTfromInorderPreorder);
+})();
+
+
+
+
+/*
+ * ========================= DESERIALIZE BT from INORDER, POSTORDER =========================
+ */
+function deserializeBTfromInorderPostorder(inorder, postorder) {
+	//base
+	if (postorder.isEmpty())
+		return;
+
+	//last element in the postorder sequence is the root
+	var root = {key: postorder.last()};
+	//remove last element (root) from the postorder sequence
+	postorder.pop();
+
+	//find root in the inorder sequence and slice it
+	//all nodes to the left will be in the left subtree, while all right nodes are in the right subtree
+	var leftTree = inorder.slice(0, lookupArrayIndex(root.key, inorder));
+	var rightTree = inorder.slice(lookupArrayIndex(root.key, inorder) + 1);
 
 	//tree root
 	if (!deserializeBTfromInorderPostorder.root)
 		deserializeBTfromInorderPostorder.root = root;
 
-	//preorder recursion that simulates traversal to insert node at every step
-	if (leftTree.length > 0) 
-		root.left = deserializeBTfromInorderPostorder(leftTree, preorder);
+	// !!reverse postorder recursion that simulates traversal to insert node at every step
 	if (rightTree.length > 0)
-		root.right = deserializeBTfromInorderPostorder(rightTree, preorder);
+		root.right = deserializeBTfromInorderPostorder(rightTree, postorder);
+	if (leftTree.length > 0) 
+		root.left = deserializeBTfromInorderPostorder(leftTree, postorder);
 
 	return root;
-
-	function lookupInorderIndex(key, array) {
-		for (var i=0; i<array.length; i++)
-			if (key == array[i])
-				return i;
-	}
 }
 /////// TEST ////////
 (function() {
-	console.log("DESERIALIZE BT from INORDER PREORDER: ");
-	deserializeBTfromInorderPostorder(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], ['F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H'], 0);
-	//deserializeBTfromInorderPostorder(['A', 'B', 'C'], ['B', 'A', 'C'], 0);
+	console.log("DESERIALIZE BT from INORDER POSTORDER: ");
+	deserializeBTfromInorderPostorder(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], ['A', 'C', 'E', 'D', 'B', 'H', 'I', 'G', 'F']);
+	//deserializeBTfromInorderPostorder(['A', 'B', 'C'], ['A', 'C', 'B']);
 	printTreeLineByLine(deserializeBTfromInorderPostorder);
 })();
 
@@ -811,21 +875,18 @@ function deserializeBTfromInorderPostorder(inorder, preorder) {
 /*
  * ========================= LOWEST COMMON ANCESTOR (BST) =========================
  */
-function lowestCommonAncestorBST(tree, node1, node2) {
-	function _lowestCommonAncestorBST(lca) {
-		if(node1 > lca.key && node2 > lca.key) {
-			return _lowestCommonAncestorBST(lca.right);
-		}
-		else if(node1 < lca.key && node2 < lca.key) {
-			return _lowestCommonAncestorBST(lca.left);
-		}
-		else {
-			return lca;
-		}
+function lowestCommonAncestorBST(lca, node1, node2) {
+	if(node1 > lca.key && node2 > lca.key) {
+		return lowestCommonAncestorBST(lca.right);
 	}
-	console.log(_lowestCommonAncestorBST(tree.root).key);
+	else if(node1 < lca.key && node2 < lca.key) {
+		return lowestCommonAncestorBST(lca.left);
+	}
+	else {
+		return lca.key;
+	}
 }
-function lowestCommonAncestorBST2(tree, node1, node2) {
+function lowestCommonAncestorBSTI(tree, node1, node2) {
 	var lca = tree.root;
 	while (lca) {
 		if(node1 > lca.key && node2 > lca.key) {
@@ -835,15 +896,21 @@ function lowestCommonAncestorBST2(tree, node1, node2) {
 			lca = lca.left;
 		}
 		else {
-			console.log(lca.key);
-			return lca;
+			return lca.key;
 		}
 	}
-	console.log(lca.key);
 }
-testTree();
+/////// TEST ////////
+(function() {
+	var tree = getTree();
+	console.log("LOWEST COMMON ANCESTOR (BST): ");
+	console.log(lowestCommonAncestorBST(tree.root, 'A', 'E'));
+	console.log(lowestCommonAncestorBST(tree.root, 'A', 'H'));
+	console.log(lowestCommonAncestorBSTI(tree, 'A', 'E'));
+	console.log(lowestCommonAncestorBSTI(tree, 'A', 'H'));
+})();
 
-
+	
 
 
 
@@ -970,6 +1037,12 @@ function getLeftmostNode(node) {
 		node = node.left;
 	}
 	return node;
+}
+function lookupArrayIndex(key, array) {
+	for (var i=0; i<array.length; i++)
+		if (key == array[i])
+			return i;
+	return 0;
 }
 function testTree() {
 	return;
