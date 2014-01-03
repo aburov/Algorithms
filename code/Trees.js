@@ -9,6 +9,51 @@ Array.prototype.isEmpty = function() {
 
 
 
+
+/*
+ * ========================= FIND NODE (BINARY SEARCH TREE) =========================
+ */
+function findNodeBST(root, key) {
+	if (!root)
+		return null;
+	if (root.key == key)
+		return root;
+	if (key < root.key)
+		return findNodeBST(root.left, key);
+	else
+		return findNodeBST(root.right, key);
+}
+/////// TEST ////////
+(function() {
+	var root = getTree().root;
+	console.log("FIND NODE (BINARY SEARCH TREE): ");
+	console.log(findNodeBST(root, 'C'));
+})();
+
+
+
+
+/*
+ * ========================= FIND NODE (BINARY TREE) =========================
+ */
+function findNodeBT(root, key) {
+	if (!root)
+		return null;
+	if (root.key == key)
+		return root;
+	var left = findNodeBT(root.left, key);
+	var right = findNodeBT(root.right, key);
+	return left || right;
+}
+/////// TEST ////////
+(function() {
+	var root = getTree().root;
+	console.log("FIND NODE (BINARY TREE): ");
+	console.log(findNodeBT(root, 'C'));
+})();
+
+
+
 /*
  * ========================= PREORDER =========================
  */
@@ -906,10 +951,130 @@ function lowestCommonAncestorBSTI(tree, node1, node2) {
 	console.log("LOWEST COMMON ANCESTOR (BST): ");
 	console.log(lowestCommonAncestorBST(tree.root, 'A', 'E'));
 	console.log(lowestCommonAncestorBST(tree.root, 'A', 'H'));
+	console.log(lowestCommonAncestorBST(tree.root, 'B', 'E'));
 	console.log(lowestCommonAncestorBSTI(tree, 'A', 'E'));
 	console.log(lowestCommonAncestorBSTI(tree, 'A', 'H'));
+	console.log(lowestCommonAncestorBSTI(tree, 'B', 'E'));
 })();
 
+
+
+
+/*
+ * ========================= LOWEST COMMON ANCESTOR (BT) =========================
+ */
+function lowestCommonAncestorBTbottomUp(root, node1, node2) {
+	if (!root)
+		return null;
+	if (root.key == node1 || root.key == node2)
+		return root;
+
+	var left = lowestCommonAncestorBTbottomUp(root.left, node1, node2);
+	var right = lowestCommonAncestorBTbottomUp(root.right, node1, node2);
+
+	if (left && right)
+		return root;
+	if (left)
+		return left;
+	if (right)
+		return right;
+}
+function lowestCommonAncestorBTtopDown(root, node1, node2) {
+	if (!root)
+		return null;
+	if (root.key == node1 || root.key == node2) return root;
+	var totalMatches = countMatchesPQ(root.left, node1, node2);
+	if (totalMatches == 1)
+		return root;
+	else if (totalMatches == 2)
+		return lowestCommonAncestorBTtopDown(root.left, node1, node2);
+	else /* totalMatches == 0 */
+    	return lowestCommonAncestorBTtopDown(root.right, node1, node2);
+
+	// Return #nodes that matches P or Q in the subtree.
+	function countMatchesPQ(root, node1, node2) {
+	  if (!root)
+	  	return 0;
+	  var matches = countMatchesPQ(root.left, node1, node2) + countMatchesPQ(root.right, node1, node2);
+	  if (root.key == node1 || root.key == node2)
+	    return 1 + matches;
+	  else
+	    return matches;
+	}
+}
+/////// TEST ////////
+(function() {
+	var tree = getTree();
+	console.log("LOWEST COMMON ANCESTOR (BT): ");
+	console.log(lowestCommonAncestorBTbottomUp(tree.root, 'A', 'E').key);
+	console.log(lowestCommonAncestorBTbottomUp(tree.root, 'A', 'H').key);
+	console.log(lowestCommonAncestorBTbottomUp(tree.root, 'B', 'E').key);
+	console.log(lowestCommonAncestorBTtopDown(tree.root, 'A', 'E').key);
+	console.log(lowestCommonAncestorBTtopDown(tree.root, 'A', 'H').key);
+	console.log(lowestCommonAncestorBTtopDown(tree.root, 'B', 'E').key);
+})();
+
+
+
+
+
+/*
+ * ========================= LOWEST COMMON ANCESTOR (BT with parent pointer) =========================
+ */
+function lowestCommonAncestorBTwithParentPointer(root, key1, key2) {
+	var node1 = findNodeBT(root, key1);
+	var node2 = findNodeBT(root, key2);
+	var visited = {};
+	while (node1 || node2) {
+		if (node1) {
+			if (visited[node1.key])
+				return node1;
+			else
+				visited[node1.key] = node1;
+			node1 = node1.parent;
+		}
+		if (node2) {
+			if (visited[node2.key])
+				return node2;
+			else
+				visited[node2.key] = node2;
+			node2 = node2.parent;
+		}
+	}
+	return root;
+}
+function lowestCommonAncestorBTwithParentPointer2(root, key1, key2) {
+	var node1 = findNodeBT(root, key1);
+	var node2 = findNodeBT(root, key2);
+	var nodeDepth1 = nodeDepth(root, key1, 0);
+	var nodeDepth2 = nodeDepth(root, key2, 0);
+
+	var deepNode = nodeDepth1 > nodeDepth2 ? node1 : node2;
+	var shallowNode = nodeDepth1 <= nodeDepth2 ? node1 : node2;
+
+	for (var i=0; i<Math.abs(nodeDepth1 - nodeDepth2); i++)
+		deepNode = deepNode.parent;
+
+	while (deepNode != shallowNode) {
+		deepNode = deepNode.parent;
+		shallowNode = shallowNode.parent;
+	}
+
+	return shallowNode;
+}
+
+/////// TEST ////////
+(function() {
+	var tree = getTree();
+	setTreeNodesParentPointer(tree.root);
+	console.log("LOWEST COMMON ANCESTOR (BT) with parent pointer: ");
+	console.log(lowestCommonAncestorBTwithParentPointer(tree.root, 'A', 'E').key);
+	console.log(lowestCommonAncestorBTwithParentPointer(tree.root, 'A', 'H').key);
+	console.log(lowestCommonAncestorBTwithParentPointer(tree.root, 'B', 'E').key);
+	console.log(lowestCommonAncestorBTwithParentPointer2(tree.root, 'A', 'E').key);
+	console.log(lowestCommonAncestorBTwithParentPointer2(tree.root, 'A', 'H').key);
+	console.log(lowestCommonAncestorBTwithParentPointer2(tree.root, 'B', 'E').key);
+})();
 	
 
 
@@ -1044,24 +1209,13 @@ function lookupArrayIndex(key, array) {
 			return i;
 	return 0;
 }
-function testTree() {
-	return;
-	var tree = new Tree();
-	var vals = ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H'];
-	for (var i=0; i<vals.length; i++) {
-		tree.put(vals[i]);
-	}
-	inorder(tree);
-	preorder(tree);
-	postorder(tree);
-	depth(tree);
-	depth2(tree);
-	treeBFS(tree);
-	printTreeLineByLine(tree);
-	printTreeLineByLine2(tree);
-	lowestCommonAncestorBST(tree, 'A', 'E');
-	lowestCommonAncestorBST(tree, 'A', 'H');
-	lowestCommonAncestorBST2(tree, 'A', 'E');
-	lowestCommonAncestorBST2(tree, 'A', 'H');
-	//console.info(tree);
+function setTreeNodesParentPointer(node) {
+	if (!node)
+		return;
+	if (node.left)
+		node.left.parent = node;
+	if (node.right)
+		node.right.parent = node;
+	setTreeNodesParentPointer(node.left);
+	setTreeNodesParentPointer(node.right);
 }
