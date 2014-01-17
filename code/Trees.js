@@ -228,7 +228,7 @@ function depth2(node) {
 
 
 /*
- * ========================= DEPTH OF NODE =========================
+ * ========================= DEPTH OF NODE BT =========================
  */
 function nodeDepth(node, key, d) {
 	if (!node)
