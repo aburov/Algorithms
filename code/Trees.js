@@ -1075,6 +1075,28 @@ function lowestCommonAncestorBTwithParentPointer2(root, key1, key2) {
 	console.log(lowestCommonAncestorBTwithParentPointer2(tree.root, 'A', 'H').key);
 	console.log(lowestCommonAncestorBTwithParentPointer2(tree.root, 'B', 'E').key);
 })();
+
+
+
+/*
+ * ========================= ALL PATHS =========================
+ */
+function allPaths(node, path) {
+	if (!node) 
+		return;
+	
+	if (!node.right && !node.left) //is leaf
+		console.log(path + '  ' + node.key);
+
+	allPaths(node.left, path + '  ' + node.key + ' ');
+	allPaths(node.right, path + '  ' + node.key + ' ');
+}
+/////// TEST ////////
+(function() {
+	console.log("ALL PATHS: ");
+	allPaths(getTree().root, '');
+})();
+
 	
 
 

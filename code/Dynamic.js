@@ -31,3 +31,82 @@ function print(json) {
 	}
 	console.info(res + ' - ' + count);
 }
+
+
+
+
+
+/*
+ * ========================= KNAPSACK =========================
+ */
+var capacity = 17;
+var items = [
+	{ weight: 3, value: 4 },
+	{ weight: 4, value: 5 },
+	{ weight: 7, value: 10 },
+	{ weight: 8, value: 11 },
+	{ weight: 9, value: 13 }
+];
+var max=0;
+var count = 0;
+var path = [];
+function knapsack(maxWeight, maxValue) {
+	for (var i=0; i<items.length; i++) {
+		count++;
+		var weight = maxWeight + items[i].weight,
+			value = maxValue + items[i].value;
+		if (weight <= capacity) {
+			//console.log(weight);
+			path.push(items[i].value);
+			//console.log(path);
+			knapsack(weight, value);
+			max =  Math.max(max, value);
+			path.pop();
+		}
+		else {
+			break;
+		}
+	}
+	return max;
+
+}
+console.log(knapsack(0, 0));
+console.log(max, count);
+
+
+/*
+ * ========================= COIN CHANGE =========================
+ */
+var amount = 16;
+var coins = [1, 2, 7, 10];
+path = [];
+min = 999;
+minPath = [];
+recursionSteps = 0;
+function change(curAmount, count) {
+	recursionSteps++;
+	for (var i=0; i<coins.length; i++) {
+		
+		var newAmount = curAmount + coins[i];
+		var newCount = count + 1;
+
+		if (newCount >= min)
+			break;
+
+		path.push(coins[i]);
+		if (newAmount < amount) {
+			change(newAmount, newCount);
+		}
+		else if (newAmount == amount) {
+			if (min > newCount) {
+				min = newCount;
+				minPath = path.slice(0);
+			}
+			min = Math.min(min, newCount);
+			console.log(newAmount, newCount, path);
+		}
+		path.pop();
+	}
+}
+console.log(change(0, 0));
+console.log(min, minPath, recursionSteps);

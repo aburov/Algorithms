@@ -139,3 +139,56 @@ function sortedArrayToBST(A, min, max) {
 	console.log("TRAVERSE SORTED ARRAY: " + out);
 })();
 
+
+
+
+
+
+
+/*
+ * ========================= find word in matrix of words - boggie =========================
+ */
+function findWordsInMatrix(matrix, dictionary) {
+	for (var i=0; i<matrix.length; i++) {
+		for (var j=0; j<matrix[i].length; j++) {
+			matrixDFS(i, j, '', {});
+		}
+	}
+	function matrixDFS(ii, jj, word, path) {
+		if (ii>=matrix.length || jj>=matrix.length || ii<0 || jj<0)
+			return; //out of bounds
+
+		if (path[ii+'_'+jj])
+			return;
+
+		word += matrix[ii][jj];
+		path[ii+'_'+jj] = true;
+
+		if (dictionary.lastIndexOf(word) != -1)
+			out.push(word);
+
+		console.log(word);
+
+		var p = JSON.parse(JSON.stringify(path));
+
+		//for (k=0; k<matrix.length^2; k++) {
+			matrixBFS(ii-1, jj, word, p); //left
+			matrixBFS(ii, jj-1, word, p); //up
+			matrixBFS(ii+1, jj, word, p); //right
+			matrixBFS(ii, jj+1, word, p); //down
+		//}
+	}
+}
+(function() {
+	var matrix = [
+		['a', 'c', 'i', 'd'],
+		['r', 't', 'd', 'd'],
+		['a', 'o', 'r', 'o'],
+		['w', 'm', 'a', 't'],
+	];
+	var dictionary = ['car', 'word', 'dot', 'tomato', 'war', 'acid'];
+	out=[];
+	findWordsInMatrix(matrix, dictionary);
+	console.log("TRAVERSE SORTED ARRAY: " + out);
+})();
+
