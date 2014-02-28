@@ -167,16 +167,15 @@ function findWordsInMatrix(matrix, dictionary) {
 		if (dictionary.lastIndexOf(word) != -1)
 			out.push(word);
 
-		console.log(word);
+		//console.log(word);
 
 		var p = JSON.parse(JSON.stringify(path));
 
-		//for (k=0; k<matrix.length^2; k++) {
-			matrixBFS(ii-1, jj, word, p); //left
-			matrixBFS(ii, jj-1, word, p); //up
-			matrixBFS(ii+1, jj, word, p); //right
-			matrixBFS(ii, jj+1, word, p); //down
-		//}
+		matrixDFS(ii-1, jj, word, p); //left
+		matrixDFS(ii, jj-1, word, p); //up
+		matrixDFS(ii+1, jj, word, p); //right
+		matrixDFS(ii, jj+1, word, p); //down
+
 	}
 }
 (function() {
@@ -189,6 +188,123 @@ function findWordsInMatrix(matrix, dictionary) {
 	var dictionary = ['car', 'word', 'dot', 'tomato', 'war', 'acid'];
 	out=[];
 	findWordsInMatrix(matrix, dictionary);
-	console.log("TRAVERSE SORTED ARRAY: " + out);
+	console.log("find word in matrix of words: " + out);
 })();
 
+
+
+
+
+/*
+ * ========================= SPIRAL ARRAY =========================
+ */
+function spiral() {
+	var matrix = [];
+	for (var i=0; i<10; i++) {
+		matrix.push([]);
+		for (var j=0; j<10; j++) {
+			matrix[i].push([]);
+		}
+		for (var j=0; j<10; j++) {
+			matrix[i][j] = 'X';
+		}
+	}
+
+	var rightStart=0, rightEnd=matrix.length-1, rightRow=0;
+	var downStart=0, downEnd=matrix.length-1, downCol=matrix.length-1;
+	var leftStart=matrix.length-1, leftEnd=1, leftRow=matrix.length-1;
+	var upStart = matrix.length-1; upEnd=1, upCol=0;
+
+	var count = -1;
+	while (count<99) {
+		for (var i=rightStart; i<rightEnd; i++)
+			matrix[rightRow][i] = ++count;
+		rightStart++; rightEnd--; rightRow++;
+
+		for (var i=downStart; i<downEnd; i++)
+			matrix[i][downCol] = ++count;
+		downStart++; downEnd--; downCol--;
+
+		for (var i=leftStart; i>=leftEnd; i--)
+			matrix[leftRow][i] = ++count;
+		leftStart--; leftEnd++; leftRow--;
+
+		for (var i=upStart; i>=upEnd; i--)
+			matrix[i][upCol] = ++count;
+		upStart--; upEnd++; upCol++;
+	}
+	return matrix;
+}
+(function() {
+	console.log("SPIRAL ARRAY: " );
+	printMatrix(spiral());
+})();
+
+
+
+
+/*
+ * ========================= PRINT DIAGONALLY =========================
+ */
+function diagonalPrint(matrix) {
+	var i = 0,
+		j = 0;
+
+	var layer = 1;
+	var out = '';
+
+	for (layer=1; layer<=matrix.length; layer++) {
+		for (var counter=0; counter<layer; counter++) {
+			out += matrix[i+counter][j-counter] + ' ';
+			
+		}
+		console.log(out);
+		out = '';
+		j++;
+	}
+
+	i=1;
+	j=matrix.length-1;
+	for (layer=layer-2; layer>0; layer--) {
+		for (var counter=0; counter<layer; counter++) {
+			out += matrix[i+counter][j-counter] + ' ';
+			
+		}
+		console.log(out);
+		out = '';
+		i++;
+	}
+
+}
+(function() {
+	console.log("DIAGONAL ARRAY: " );
+	diagonalPrint([
+		[1, 2, 3],
+		[4, 5, 6],
+		[7, 8, 9]
+	]);
+})();
+
+
+
+/*
+ * ========================= PERMUTATIONS =========================
+ */
+ var visited = {};
+function permutations(A, count, str) {
+	if (count <A.length)
+		for (var i=0; i<A.length; i++) {
+			if (!visited[i]) {
+				visited[i]=true
+				permutations(A, count+1, str+A[i]);
+				visited[i]=false;
+			}
+			
+		}
+	else
+		console.log(str);
+}
+(function() {
+	console.log("PERMUTATIONS: " );
+	permutations([1, 2, 3], 0, '');
+})();
