@@ -160,12 +160,13 @@ function findAnagramsInArray(anagrams) {
  */
 function firstNonRepeatingCharacter(string) {
 	var hashTable = {};
-
+	//hash first occurence and counts to every character
 	for (var i=0; i<string.length; i++) {
 		if (!hashTable[string[i]])
 			hashTable[string[i]] = {firstIndex:i, count:0}
 		hashTable[string[i]].count++;
 	}
+	//find min occurence index for every character that has count one
 	var minIndex = string.length-1;
 	for (var key in hashTable) {
 		if (hashTable[key].count == 1)
@@ -189,18 +190,18 @@ function firstNonRepeatingCharacter(string) {
  */
 function firstNonRepeatingCharacterStream(string) {
 	var repeated = {};
-	var queue = [];
+	var nonRepeated = [];
 	//reading stream
 	for (var i=0; i<string.length; i++) {
 		if (repeated[string[i]]) {
-			remove(queue, string[i]);
+			remove(nonRepeated, string[i]);
 		}
 		else {
 			repeated[string[i]] = true
-			queue.push(string[i]);
+			nonRepeated.push(string[i]);
 		}
 	}
-	return queue[0];
+	return nonRepeated[0];
 }
 (function () {
 	console.log('NON REPEATING CHARACTER IN STREAM : ');

@@ -290,7 +290,7 @@ function diagonalPrint(matrix) {
 /*
  * ========================= PERMUTATIONS =========================
  */
- var visited = {};
+ var visited = {}; // keep track of back-edges
 function permutations(A, count, str) {
 	if (count <A.length)
 		for (var i=0; i<A.length; i++) {
@@ -299,7 +299,6 @@ function permutations(A, count, str) {
 				permutations(A, count+1, str+A[i]);
 				visited[i]=false;
 			}
-			
 		}
 	else
 		console.log(str);
@@ -308,3 +307,65 @@ function permutations(A, count, str) {
 	console.log("PERMUTATIONS: " );
 	permutations([1, 2, 3], 0, '');
 })();
+
+
+
+
+/*
+ * ========================= PHONE  STRINGS =========================
+ */
+ var phoneStringStack= [];
+function phoneString(numbers, currNumberIndex, lettersMap) {
+	if (currNumberIndex < numbers.length)
+		for (var i=0; i<numbers.length; i++) {
+			for (var j=0; j<lettersMap[numbers[i]].length; j++) {
+				phoneStringStack.push(lettersMap[numbers[i]][j]);
+				phoneString(numbers, currNumberIndex+1, lettersMap);
+				phoneStringStack.pop();
+			}
+		}
+	else {
+		//console.log(phoneStringStack);
+	}
+}
+(function() {
+	console.log("PHONE STRINGS: " );
+	phoneString([1, 2, 3], 0, {1:'abc', 2:'def', 3:'ghi'});
+})();
+
+
+
+/*
+ * ========================= ODOMETER =========================
+ */
+ var phoneStringStack= [];
+function odometer(A, max) {
+	while(true) { //loop until first value is max
+		//spin last value until overflow
+		while(A[A.length-1] < max) { //loop until value is max
+			A[A.length-1] ++;
+			console.log(A);
+		}
+
+		for (var i=A.length-1; i>=0; i--) {
+			if (i==0 && A[0]==max)
+				return;
+
+			if(A[i] < max) {
+				A[i] ++;
+				break;
+			}
+			else {
+				A[i] = 0;
+			}
+			console.log(A);
+		}
+	}
+}
+(function() {
+	console.log("ODOMETER: " );
+	odometer([0, 0, 0], 3);
+})();
+
+
+
