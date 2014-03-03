@@ -453,7 +453,7 @@ function validateBST2(node, min, max) {
 
 
 
-/*
+/*TODO
  * ========================= CHECK BALANCED BST =========================
  */
  function isBalancedTree(node) {

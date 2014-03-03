@@ -63,9 +63,9 @@ function isPalindrome(string) {
 	var leftCounter = -1,
 		rightCounter = string.length;
 	while (leftCounter++ < rightCounter--) {
-		while (!isCharacter(string[leftCounter]))
+		while (!isCharacter(string[leftCounter])) //skip no chars
 			leftCounter++;
-		while (!isCharacter(string[rightCounter]))
+		while (!isCharacter(string[rightCounter])) //skip non chars
 			rightCounter--;
 		if (string[leftCounter] != string[rightCounter])
 			return false; 
@@ -90,7 +90,7 @@ function isPalindrome(string) {
  * ========================= ANAGRAMS =========================
  */
 function isAnagrams(string1, string2) {
-	return sortString(string1) == sortString(string2);
+	return sortString(string1) == sortString(string2); //compare sorted strings (nother way is to count chars)
 }
 function isAnagrams2(string1, string2) {
 	if (string1.length != string2.length)
@@ -189,15 +189,17 @@ function firstNonRepeatingCharacter(string) {
  * ========================= NON REPEATING CHARACTER IN STREAM =========================
  */
 function firstNonRepeatingCharacterStream(string) {
-	var repeated = {};
+	var visited = {};
 	var nonRepeated = [];
-	//reading stream
+	// reading stream
 	for (var i=0; i<string.length; i++) {
-		if (repeated[string[i]]) {
+		// if chars was previously seen, remove from non-repeated
+		if (visited[string[i]]) {
 			remove(nonRepeated, string[i]);
 		}
+		// if chars was NOT previously seen, push non-repeated
 		else {
-			repeated[string[i]] = true
+			visited[string[i]] = true
 			nonRepeated.push(string[i]);
 		}
 	}

@@ -369,3 +369,47 @@ function odometer(A, max) {
 
 
 
+
+/*
+ * ========================= ROTATE =========================
+ */
+function rotate(A, cutoff) {
+	//reverse subarrays on each side of cutoff
+	for (var i=0; i<cutoff/2; i++) {
+		swap(A, i, cutoff-i);
+	}
+	for (var i=0; i<(A.length-cutoff)/2; i++) {
+		swap(A, cutoff+1+i, A.length-1-i);
+	}
+
+	//reverse entire array
+	for (var i=0; i<A.length/2; i++) {
+		swap(A, i, A.length-1-i);
+	}
+
+	return A;
+}
+(function() {
+	console.log("ROTATE: " );
+	console.log(rotate([1, 2, 3, 4, 5, 6, 7, 8, 9], 3));
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function swap(A, i, j) {
+	var tmp = A[j];
+	A[j] = A[i];
+	A[i] = tmp;
+}
