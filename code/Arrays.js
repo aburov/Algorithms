@@ -149,6 +149,7 @@ function sortedArrayToBST(A, min, max) {
  * ========================= find word in matrix of words - boggie =========================
  */
 function findWordsInMatrix(matrix, dictionary) {
+	var stack = [];
 	for (var i=0; i<matrix.length; i++) {
 		for (var j=0; j<matrix[i].length; j++) {
 			matrixDFS(i, j, '', {});
@@ -171,10 +172,16 @@ function findWordsInMatrix(matrix, dictionary) {
 
 		var p = JSON.parse(JSON.stringify(path));
 
+		stack.push( matrix[ii][jj] );
+		//console.log(stack);
+
 		matrixDFS(ii-1, jj, word, p); //left
 		matrixDFS(ii, jj-1, word, p); //up
 		matrixDFS(ii+1, jj, word, p); //right
 		matrixDFS(ii, jj+1, word, p); //down
+
+		stack.pop();
+
 
 	}
 }
@@ -397,13 +404,83 @@ function rotate(A, cutoff) {
 
 
 
+/*
+ * ========================= INCREASING PATH =========================
+ */
+function increasingPathInMatrix(A) {
+	var visited = {};
+		increasingPath = [];
+		longestPath = [];
+	for (var i=0; i<A.length; i++) {
+		for (var j=0; j<A[i].length; j++) {
+			visited = {};
+			increasingPath = [];
+			_increasingPathInMatrix(i, j, A);
+		}
+	}
+
+	function _increasingPathInMatrix(i, j, A) {
+		if (i >= A.length || j > A[i].length || visited[i+'_'+j])
+			return;
+
+		visited[i+'_'+j] = true;
+		if (increasingPath.length ==0 || A[i][j] >= increasingPath[increasingPath.length-1]) {
+			increasingPath.push(A[i][j]);
+			_increasingPathInMatrix(i, j+1, A);
+			_increasingPathInMatrix(i+1, j, A);
+			if (longestPath.length < increasingPath.length) {
+				longestPath = increasingPath.slice();
+			}
+			//console.log(increasingPath);
+			increasingPath.pop();
+		}
+	}
+
+	return longestPath;
+}
+(function() {
+	console.log("INCREASING PATH: " );
+	console.log(increasingPathInMatrix([
+		[10, 2, 3, 4],
+		[1, 2, 3, 4],
+		[5, 2, 3, 4],
+		[1, 2, 3, 4]
+	]));
+})();
 
 
 
 
 
+/*
+ * ========================= MAJORITY NUMBER =========================
+ */
+function majorityNumber(A) {
+	var count = 0;
+	var majorityNumber = A[0];
+
+	for (var i=1; i<A.length; i++) {
+		if (A[i] == majorityNumber)
+			count++;
+		else if (A[i] != majorityNumber) 
+			count--;
+		
+		if (count == 0) {
+			majorityNumber = A[i];
+			count = 1;
+		}
+	}
+	return majorityNumber;
+}
+(function() {
+	console.log("MAJORITY NUMBER: " );
+	console.log(majorityNumber([3, 3, 4, 2, 4, 4, 2, 4, 4]));
+})();
 
 
+
+
+ 
 
 
 

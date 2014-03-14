@@ -94,12 +94,19 @@ function preorderI(node) {
 /*
  * ========================= INORDER =========================
  */
+ var __path = [];
 function inorder(node) {
 	if (!node)
 		return;
+
+	__path.push(node.key);
+	console.log(__path);
+
 	inorder(node.left);
 	out+=node.key + ' ';
 	inorder(node.right);
+
+	__path.pop();
 }
 function inorderI(node) {
 	var stack = [];
@@ -235,7 +242,10 @@ function nodeDepth(node, key, d) {
 		return -1;
 	if (node.key == key)
 		return d;
-	return Math.max(nodeDepth(node.left, key, d+1), nodeDepth(node.right, key, d+1));
+	return Math.max(
+			nodeDepth(node.left, key, d+1), 
+			nodeDepth(node.right, key, d+1)
+		);
 }
 /////// TEST ////////
 (function() {
