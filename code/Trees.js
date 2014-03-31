@@ -206,9 +206,10 @@ function treeBFS(node) {
 
 
 
+//TODO - min depth
 
 /*
- * ========================= MAX DEPTH =========================
+ * ========================= MAX DEPTH TREE =========================
  */
 function depth(node, d) {
 	if (!node) 
@@ -223,12 +224,33 @@ function depth2(node) {
 		return 0;
 	var l = depth2(node.left);
 	var r = depth2(node.right);
-	return Math.max(l,r) +1;
+	return Math.max(l,r) + 1;
+}
+function depth3(node) {
+	if (!node)
+		return 0;
+	return Math.max(depth3(node.left), depth3(node.right)) + 1;
 }
 /////// TEST ////////
 (function() {
 	console.log('DEPTH: ' + depth(getTree().root, 0));
 	console.log('DEPTH: ' + depth2(getTree().root, 0));
+})();
+
+
+
+
+/*
+ * ========================= MIN DEPTH TREE =========================
+ */
+function minDepth(node) {
+	if (!node)
+		return 0;
+	return Math.min(minDepth(node.left), minDepth(node.right)) + 1;
+}
+/////// TEST ////////
+(function() {
+	console.log('MIN DEPTH: ' + minDepth(getTree().root));
 })();
 
 
@@ -1091,20 +1113,65 @@ function lowestCommonAncestorBTwithParentPointer2(root, key1, key2) {
 /*
  * ========================= ALL PATHS =========================
  */
-function allPaths(node, path) {
+ var path = [];
+ function allPaths(node) {
+	if (!node) 
+		return;
+
+	path.push(node.key);
+	
+	if (!node.right && !node.left) // leaf - end path
+		console.log(path.toString());
+
+	allPaths(node.left);
+	allPaths(node.right);
+
+	path.pop();
+}
+function allPaths1(node, path) {
 	if (!node) 
 		return;
 	
-	if (!node.right && !node.left) //is leaf
+	if (!node.right && !node.left) // leaf - end path
 		console.log(path + '  ' + node.key);
 
-	allPaths(node.left, path + '  ' + node.key + ' ');
-	allPaths(node.right, path + '  ' + node.key + ' ');
+	allPaths1(node.left, path + '  ' + node.key + ' ');
+	allPaths1(node.right, path + '  ' + node.key + ' ');
 }
 /////// TEST ////////
 (function() {
 	console.log("ALL PATHS: ");
-	allPaths(getTree().root, '');
+	allPaths(getTree().root);
+	allPaths1(getTree().root, '');
+})();
+
+
+
+
+/*
+ * ========================= CLOSEST NODE VALUE (DISTANCE) =========================
+ */
+var minVal = Infinity;
+var minKey = Infinity;
+function closestNode(node, value) {
+	if (!node) 
+		return Infinity;
+
+	var newMin = Math.abs(node.key - value);
+	if (newMin < minVal) {
+		minKey = node.key;
+		minVal = newMin;
+	}
+
+	closestNode(node.left, value, node.key-value); 
+	closestNode(node.right, value, node.key-value);
+
+	return minKey;
+}
+/////// TEST ////////
+(function() {
+	console.log("CLOSEST NODE VALUE: ");
+	console.log(closestNode(getIntTree().root, 10));
 })();
 
 	

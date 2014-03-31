@@ -43,7 +43,7 @@ function sqrt(n) {
 function fib(n) {
 		if (n==0 || n==1)
 			return 1;
-    return (fib(n-2) + fib(n-1))
+    return fib(n-2) + fib(n-1);
 }
 function fibI(n) {
 		var n2 = 0,
@@ -59,6 +59,20 @@ function fibI(n) {
 (function() {
 	console.log("FIB: " + fib(6));
 	console.log("FIB I: " + fibI(6));
+})();
+
+
+
+/*
+ * ========================= FACTORIAL =========================
+ */
+function factorial(n) {
+    if (n==0)
+      return 1;
+    return n * factorial(n-1);
+}
+(function() {
+  console.log("FACTORIAL: " + factorial(6));
 })();
 
 

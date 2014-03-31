@@ -405,7 +405,7 @@ function rotate(A, cutoff) {
 
 
 /*
- * ========================= INCREASING PATH =========================
+ * ========================= INCREASING PATH IN MATRIX =========================
  */
 function increasingPathInMatrix(A) {
 	var visited = {};

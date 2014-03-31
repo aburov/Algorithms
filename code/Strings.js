@@ -8,9 +8,8 @@ function reverse(string) {
 	return string;
 }
 function reverseRecursive(string) {
-    if ((null == string) || (string.length()  <= 1)) {
+    if ((null == string) || string.length  <= 1)
         return string;
-    }
     return reverseRecursive(string.substring(1)) + str.charAt(0);
 }
 (function () {
@@ -89,10 +88,11 @@ function isPalindrome(string) {
 /*
  * ========================= ANAGRAMS =========================
  */
-function isAnagrams(string1, string2) {
-	return sortString(string1) == sortString(string2); //compare sorted strings (nother way is to count chars)
+function isAnagrams(string1, string2) { //brute force
+	return sortString(string1) == sortString(string2); //compare sorted strings 
 }
-function isAnagrams2(string1, string2) {
+
+function isAnagrams2(string1, string2) { //count characters and compare frequencies
 	if (string1.length != string2.length)
 		return false;
 	var hashTable = {};
@@ -203,7 +203,7 @@ function firstNonRepeatingCharacterStream(string) {
 			nonRepeated.push(string[i]);
 		}
 	}
-	return nonRepeated[0];
+	return nonRepeated[0]; //first entry
 }
 (function () {
 	console.log('NON REPEATING CHARACTER IN STREAM : ');
